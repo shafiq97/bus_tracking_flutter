@@ -10,9 +10,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // initialize app
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   //final counterMetric = CounterMetric(name: ‘my_app_counter’);
   // initialize Firebase
   //counterMetric.inc();
@@ -31,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(),
-      home: splash(),
+      home: const splash(),
     );
   }
 }
@@ -52,6 +50,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return UI();
+    return const UI();
   }
 }

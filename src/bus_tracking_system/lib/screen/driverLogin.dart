@@ -1,4 +1,5 @@
-import 'package:bus_tracking_system/screen/driverLogin.dart';
+import 'package:bus_tracking_system/screen/driver_destination.dart';
+import 'package:bus_tracking_system/screen/ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bus_tracking_system/Constants/constants.dart';
@@ -14,14 +15,14 @@ import 'package:bus_tracking_system/componentes/My_TextField.dart';
 
 import 'locations_page.dart';
 
-class UI extends StatefulWidget {
-  const UI({Key? key}) : super(key: key);
+class DriverLogin extends StatefulWidget {
+  const DriverLogin({Key? key}) : super(key: key);
 
   @override
-  State<UI> createState() => _UIState();
+  State<DriverLogin> createState() => _DriverLoginState();
 }
 
-class _UIState extends State<UI> {
+class _DriverLoginState extends State<DriverLogin> {
   final AuthService _auth = AuthService();
   bool isStudent = true;
   late final String email;
@@ -41,7 +42,7 @@ class _UIState extends State<UI> {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return const DriverLogin();
+          return const UI();
         },
       ),
     );
@@ -63,7 +64,7 @@ class _UIState extends State<UI> {
 
               const SizedBox(height: 100),
               const Text(
-                'Login',
+                'Driver Login',
                 style: TextStyle(
                   //color: Color(0xFF34BAC3),
                   color: Color(0xFF1CBBBE),
@@ -77,7 +78,7 @@ class _UIState extends State<UI> {
               MyTextField(
                 controller: emailController,
                 obscureText: false,
-                hintText: 'Enter student email',
+                hintText: 'Enter driver email',
                 validator: (value) {
                   bool emailValid = RegExp(
                           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-z0-9]+\.[a-zA-Z]+")
@@ -91,11 +92,9 @@ class _UIState extends State<UI> {
                   return null;
                 },
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: isStudent
-                      ? 'Enter student email'
-                      : 'Enter bus-driver email',
-                  hintStyle: const TextStyle(
+                decoration: const InputDecoration(
+                  hintText: 'Enter bus-driver email',
+                  hintStyle: TextStyle(
                     color: Color.fromARGB(169, 106, 196, 207),
                     fontSize: 18.0,
                   ),
@@ -134,7 +133,7 @@ class _UIState extends State<UI> {
               TextButton(
                 onPressed: toggleLoginOption,
                 child: const Text(
-                  'Log in as Driver',
+                  'Log in as student',
                   style: TextStyle(fontSize: 20),
                   selectionColor: Colors.blueAccent,
                 ),
@@ -153,11 +152,12 @@ class _UIState extends State<UI> {
                         'There is no user record corresponding to this identifier. The user may have been deleted.') {
                       // Handle login failure
                     } else {
+                      // ignore: use_build_context_synchronously
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) {
-                            return const LocationsPage();
+                            return const DriverDestinationPage();
                           },
                         ),
                       );

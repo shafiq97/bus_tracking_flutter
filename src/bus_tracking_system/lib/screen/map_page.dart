@@ -30,14 +30,14 @@ class MapPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return BusTracking();
-                    },
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (BuildContext context) {
+                //       return BusTracking(station: null,);
+                //     },
+                //   ),
+                // );
               },
             ),
           ],

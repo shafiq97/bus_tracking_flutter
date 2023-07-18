@@ -49,16 +49,18 @@ class DefaultFirebaseOptions {
     messagingSenderId: '826614974960',
     projectId: 'bustrackingsystem-62417',
     authDomain: 'bustrackingsystem-62417.firebaseapp.com',
-    databaseURL: 'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'bustrackingsystem-62417.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDFv8ji8r8hnt9WHNUf3oiJ_BaLFCK8n08',
+    apiKey: 'AIzaSyD3yDOo9gaxmhEiHdL4E1e0CG_BhsYLeXk',
     appId: '1:826614974960:android:a28ed6cd90ba76835a7535',
     messagingSenderId: '826614974960',
-    projectId: 'bustrackingsystem-62417',
-    databaseURL: 'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
+    projectId: 'e-bus-tracker',
+    databaseURL:
+        'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'bustrackingsystem-62417.appspot.com',
   );
 
@@ -67,9 +69,11 @@ class DefaultFirebaseOptions {
     appId: '1:826614974960:ios:400bb9ef1e42ae875a7535',
     messagingSenderId: '826614974960',
     projectId: 'bustrackingsystem-62417',
-    databaseURL: 'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'bustrackingsystem-62417.appspot.com',
-    iosClientId: '826614974960-0hcvtv2358v9ur5ujrd16l0t6u79k4fq.apps.googleusercontent.com',
+    iosClientId:
+        '826614974960-0hcvtv2358v9ur5ujrd16l0t6u79k4fq.apps.googleusercontent.com',
     iosBundleId: 'com.example.busTrackingSystem',
   );
 
@@ -78,9 +82,11 @@ class DefaultFirebaseOptions {
     appId: '1:826614974960:ios:400bb9ef1e42ae875a7535',
     messagingSenderId: '826614974960',
     projectId: 'bustrackingsystem-62417',
-    databaseURL: 'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://bustrackingsystem-62417-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'bustrackingsystem-62417.appspot.com',
-    iosClientId: '826614974960-0hcvtv2358v9ur5ujrd16l0t6u79k4fq.apps.googleusercontent.com',
+    iosClientId:
+        '826614974960-0hcvtv2358v9ur5ujrd16l0t6u79k4fq.apps.googleusercontent.com',
     iosBundleId: 'com.example.busTrackingSystem',
   );
 }

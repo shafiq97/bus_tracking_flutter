@@ -12,11 +12,11 @@ class _splashState extends State<splash> {
   @override
   void initState() {
     super.initState();
-_navigatetohome();
+    _navigatetohome();
   }
 
   _navigatetohome() async {
-    await Future.delayed(Duration(milliseconds: 2000), () {});
+    await Future.delayed(const Duration(milliseconds: 2000), () {});
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
@@ -28,16 +28,16 @@ _navigatetohome();
         child: Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(color: Color(0xfff6f8f4)),
+            decoration: const BoxDecoration(color: Color(0xfff6f8f4)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-              Center(
-                child:Image.asset(
-                  'assets/images/bus.png',
+                Center(
+                  child: Image.asset(
+                    'assets/images/bus.png',
+                  ),
                 ),
-              ),
-                Text(
+                const Text(
                   " UPES BUS TARCKER",
                   style: TextStyle(
                     height: 5,
@@ -46,7 +46,7 @@ _navigatetohome();
                     fontSize: 30.0,
                   ),
                 ),
-                CircularProgressIndicator(),
+                const CircularProgressIndicator(),
               ],
             )),
       ),

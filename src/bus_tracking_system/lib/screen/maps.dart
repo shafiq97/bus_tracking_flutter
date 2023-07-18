@@ -12,20 +12,28 @@ import '../Constants/constants.dart';
 import 'package:bus_tracking_system/screen/profile.dart';
 import 'package:bus_tracking_system/screen/locations_page.dart';
 
+import '../model/station.dart';
+
 class BusTracking extends StatefulWidget {
+  final Station station;
+  const BusTracking({Key? key, required this.station}) : super(key: key);
   @override
   _BusTrackingState createState() => _BusTrackingState();
 }
 
 class _BusTrackingState extends State<BusTracking> {
-  String apiKey = orsapikey; //OpenRouteService API key
+  String apiKey =
+      "5b3ce3597851110001cf62484ed1f62b679d4f4395440958e2c058fa"; //OpenRouteService API key
   late String distance = '';
   late String time = '';
+
   bool isLoading = false; //A flag to check the status of the api data loading
-  late LatLng sourceLocation = LatLng(0, 0); //For user location
+
+  late LatLng sourceLocation = const LatLng(0, 0); //For user location
   late LatLng destinationLocation = LatLng(
-      30.3253, //For driver location
-      78.0413); //Destination Location (retrieved from the firebase database; must be connected to firebase)
+      (widget.station.latitude), // For destination location
+      (widget.station.longitude));
+//Destination Location (retrieved from the firebase database; must be connected to firebase)
   List<LatLng> polylinePoints = [];
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -38,45 +46,65 @@ class _BusTrackingState extends State<BusTracking> {
     initNotifications();
     requestPermission();
 
-    dbRef = FirebaseDatabase.instance.ref().child('Value');
+    dbRef = FirebaseDatabase.instance
+        .ref()
+        .child('drivers'); //Change 'location' to your actual location node
+
+    Stream.periodic(Duration(seconds: 15)).listen((_) {
+      dbRef.once().then((DatabaseEvent event) {
+        Map<dynamic, dynamic>? data = event.snapshot.value as Map?;
+        if (data != null && data.isNotEmpty) {
+          String key = data.keys.first;
+          Map<dynamic, dynamic> values = data[key] as Map<dynamic, dynamic>;
+          setState(() {
+            destinationLocation = LatLng(
+              values['latitude'],
+              values['longitude'],
+            );
+          });
+        }
+      });
+    });
   }
 
 //Permission to access live-location
   Future<void> requestPermission() async {
     LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: Text('Location Permission Required'),
-          content:
-              Text('This app needs to access your location to work properly.'),
+          title: const Text('Location Permission Required'),
+          content: const Text(
+              'This app needs to access your location to work properly.'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text('Settings'),
+              child: const Text('Settings'),
               onPressed: () => AppSettings.openAppSettings(),
             ),
           ],
         ),
       );
     } else if (permission == LocationPermission.deniedForever) {
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: Text('Location Permission Required'),
-          content:
-              Text('This app needs to access your location to work properly.'),
+          title: const Text('Location Permission Required'),
+          content: const Text(
+              'This app needs to access your location to work properly.'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text('Settings'),
+              child: const Text('Settings'),
               onPressed: () => AppSettings.openAppSettings(),
             ),
           ],
@@ -117,14 +145,14 @@ class _BusTrackingState extends State<BusTracking> {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    final DarwinInitializationSettings initializationSettingsIOS =
+    const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
     );
 
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
@@ -218,8 +246,8 @@ class _BusTrackingState extends State<BusTracking> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Do you want to log out?'),
+          title: const Text('Logout'),
+          content: const Text('Do you want to log out?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -227,13 +255,13 @@ class _BusTrackingState extends State<BusTracking> {
                 Navigator.of(context).pop();
                 // Add your logout logic here
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
           ],
         );
@@ -247,14 +275,14 @@ class _BusTrackingState extends State<BusTracking> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           'Select Route',
           style: TextStyle(color: Colors.black),
         ),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               color: Colors.black,
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -267,7 +295,7 @@ class _BusTrackingState extends State<BusTracking> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
@@ -280,18 +308,18 @@ class _BusTrackingState extends State<BusTracking> {
               ),
             ),
             ListTile(
-              title: Text('Select Route'),
+              title: const Text('Select Route'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LocationsPage(),
+                    builder: (context) => const LocationsPage(),
                   ),
                 );
               },
             ),
             ListTile(
-              title: Text('Profile'),
+              title: const Text('Profile'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -302,7 +330,7 @@ class _BusTrackingState extends State<BusTracking> {
               },
             ),
             ListTile(
-              title: Text('Logout'),
+              title: const Text('Logout'),
               onTap: _showLogoutConfirmationDialog,
             ),
           ],
@@ -320,7 +348,7 @@ class _BusTrackingState extends State<BusTracking> {
                 TileLayer(
                   urlTemplate:
                       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  subdomains: ['a', 'b', 'c'],
+                  subdomains: const ['a', 'b', 'c'],
                 ),
                 MarkerLayer(
                   markers: [
@@ -340,12 +368,10 @@ class _BusTrackingState extends State<BusTracking> {
                       width: 35.0,
                       height: 35.0,
                       point: destinationLocation,
-                      builder: (ctx) => Container(
-                        child: Image.asset(
-                          'assets/images/busicon.png', //Custom Bus icon
-                          width: 5.0,
-                          height: 5.0,
-                        ),
+                      builder: (ctx) => Image.asset(
+                        'assets/images/busicon.png', //Custom Bus icon
+                        width: 5.0,
+                        height: 5.0,
                       ),
                     ),
                   ],
@@ -368,11 +394,11 @@ class _BusTrackingState extends State<BusTracking> {
               children: [
                 Text(
                   'Distance: $distance',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 Text(
                   'Time: $time',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 // MaterialButton(
                 //   onPressed: () {
@@ -401,7 +427,6 @@ class _BusTrackingState extends State<BusTracking> {
                               dbRef.push().set(values);
                             });
                     },
-                    child: Text('Show Distance & Time'),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
@@ -413,6 +438,7 @@ class _BusTrackingState extends State<BusTracking> {
                         },
                       ),
                     ),
+                    child: const Text('Show Distance & Time'),
                   ),
               ],
             ),
