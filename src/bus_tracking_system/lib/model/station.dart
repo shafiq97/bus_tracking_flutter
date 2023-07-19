@@ -1,7 +1,7 @@
 class Station {
   final String name;
-  final double latitude;
-  final double longitude;
+  final String latitude;
+  final String longitude;
 
   Station({
     required this.name,

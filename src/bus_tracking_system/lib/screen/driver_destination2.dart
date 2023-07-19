@@ -21,15 +21,39 @@ class _DriverDestinationPage2State extends State<DriverDestinationPage2> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   Prediction? _selectedPrediction;
 
-  void _updateLocationToFirebase() {
+  Future<void> _updateLocationToFirebase() async {
     if (_selectedPrediction != null) {
-      _firebaseFirestore.collection('drivers').add({
-        'destination': _destinationController.text,
-        'longitude': _selectedPrediction!.lng,
-        'latitude': _selectedPrediction!.lat,
-        'userID': FirebaseAuth.instance.currentUser!
-            .uid, // Optionally adding user ID to the document
-      });
+      try {
+        await _firebaseFirestore.collection('drivers').add({
+          'destination': _destinationController.text,
+          'longitude': _selectedPrediction!.lng,
+          'latitude': _selectedPrediction!.lat,
+          'userID': FirebaseAuth.instance.currentUser!.uid,
+        });
+
+        // Show the success dialog
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Success'),
+              content: const Text('Location updated successfully!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } catch (e) {
+        // Handle any errors here. Maybe show an error dialog or print the error.
+        print("Error updating location: $e");
+      }
     }
   }
 
@@ -139,10 +163,10 @@ class _DriverDestinationPage2State extends State<DriverDestinationPage2> {
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_destinationController.text.isNotEmpty) {
                   // Update destination in your database
-                  _updateLocationToFirebase();
+                  await _updateLocationToFirebase();
                 }
               },
               child: const Text('Set Destination'),

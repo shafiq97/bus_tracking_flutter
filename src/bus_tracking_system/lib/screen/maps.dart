@@ -31,8 +31,8 @@ class _BusTrackingState extends State<BusTracking> {
 
   late LatLng sourceLocation = const LatLng(0, 0); //For user location
   late LatLng destinationLocation = LatLng(
-      (widget.station.latitude), // For destination location
-      (widget.station.longitude));
+      (double.parse(widget.station.latitude)), // For destination location
+      (double.parse(widget.station.longitude)));
 //Destination Location (retrieved from the firebase database; must be connected to firebase)
   List<LatLng> polylinePoints = [];
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
