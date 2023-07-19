@@ -1,4 +1,5 @@
 import 'package:bus_tracking_system/screen/driverLogin.dart';
+import 'package:bus_tracking_system/screen/signup.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bus_tracking_system/Constants/constants.dart';
@@ -42,6 +43,20 @@ class _UIState extends State<UI> {
       MaterialPageRoute(
         builder: (BuildContext context) {
           return const DriverLogin();
+        },
+      ),
+    );
+  }
+
+  void gotoSignUp() {
+    setState(() {
+      isStudent = !isStudent;
+    });
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return const SignupPage();
         },
       ),
     );
@@ -139,6 +154,14 @@ class _UIState extends State<UI> {
                   selectionColor: Colors.blueAccent,
                 ),
               ),
+              TextButton(
+                onPressed: gotoSignUp,
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 20),
+                  selectionColor: Colors.blueAccent,
+                ),
+              ),
               const SizedBox(height: 150),
               MyButton(
                 label: 'Login',
@@ -153,6 +176,7 @@ class _UIState extends State<UI> {
                         'There is no user record corresponding to this identifier. The user may have been deleted.') {
                       // Handle login failure
                     } else {
+                      // ignore: use_build_context_synchronously
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
