@@ -54,12 +54,28 @@ class _BusTrackingState extends State<BusTracking> {
       dbRef.once().then((DatabaseEvent event) {
         Map<dynamic, dynamic>? data = event.snapshot.value as Map?;
         if (data != null && data.isNotEmpty) {
-          String key = data.keys.first;
-          Map<dynamic, dynamic> values = data[key] as Map<dynamic, dynamic>;
+          String destinationString = data['destinationLocation'];
+          String sourceString = data['sourceLocation'];
+
+          var destinationLat = double.parse(
+              destinationString.split('(')[1].split(',')[0].split(':')[1]);
+          var destinationLng = double.parse(
+              destinationString.split('longitude:')[1].split(')')[0]);
+
+          var sourceLat = double.parse(
+              sourceString.split('(')[1].split(',')[0].split(':')[1]);
+          var sourceLng =
+              double.parse(sourceString.split('longitude:')[1].split(')')[0]);
+
           setState(() {
             destinationLocation = LatLng(
-              values['latitude'],
-              values['longitude'],
+              destinationLat,
+              destinationLng,
+            );
+
+            sourceLocation = LatLng(
+              sourceLat,
+              sourceLng,
             );
           });
         }

@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bus_tracking_system/componentes/MyButton.dart';
 import 'package:bus_tracking_system/componentes/My_TextField.dart';
 
+import 'driver_destination2.dart';
 import 'locations_page.dart';
 
 class DriverLogin extends StatefulWidget {
@@ -157,7 +158,7 @@ class _DriverLoginState extends State<DriverLogin> {
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) {
-                            return const DriverDestinationPage();
+                            return const DriverDestinationPage2();
                           },
                         ),
                       );

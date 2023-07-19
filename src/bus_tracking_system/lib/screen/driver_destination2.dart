@@ -23,13 +23,12 @@ class _DriverDestinationPage2State extends State<DriverDestinationPage2> {
 
   void _updateLocationToFirebase() {
     if (_selectedPrediction != null) {
-      _firebaseFirestore
-          .collection('drivers')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({
+      _firebaseFirestore.collection('drivers').add({
         'destination': _destinationController.text,
         'longitude': _selectedPrediction!.lng,
         'latitude': _selectedPrediction!.lat,
+        'userID': FirebaseAuth.instance.currentUser!
+            .uid, // Optionally adding user ID to the document
       });
     }
   }
@@ -121,7 +120,7 @@ class _DriverDestinationPage2State extends State<DriverDestinationPage2> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GooglePlaceAutoCompleteTextField(
                   textEditingController: _destinationController,
-                  googleAPIKey: "YOUR_GOOGLE_API_KEY",
+                  googleAPIKey: "AIzaSyC9XbLY2QHCWNqpzwZa74mfvt19Otk4ZIw",
                   inputDecoration:
                       const InputDecoration(hintText: "Search your location"),
                   debounceTime: 800,
