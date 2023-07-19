@@ -1,8 +1,13 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bus_tracking_system/componentes/MyButton.dart';
 import 'package:bus_tracking_system/componentes/My_TextField.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:bus_tracking_system/screen/profile.dart';
@@ -20,6 +25,57 @@ class _DriverDestinationPage2State extends State<DriverDestinationPage2> {
   final _destinationController = TextEditingController();
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   Prediction? _selectedPrediction;
+  final _longitudeController = TextEditingController();
+  final _latitudeController = TextEditingController();
+  Timer? locationTimer;
+
+  void startLocationUpdates() {
+    locationTimer =
+        Timer.periodic(const Duration(seconds: 20), (Timer t) async {
+      var currentLocation = await _getCurrentLocation();
+      _longitudeController.text = currentLocation.longitude.toString();
+      _latitudeController.text = currentLocation.latitude.toString();
+      _updateLocationToRealTimeFirebase();
+    });
+  }
+
+  Future<Position> _getCurrentLocation() async {
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  final DatabaseReference _firebaseDatabase = FirebaseDatabase.instance.ref();
+
+  @override
+  void dispose() {
+    locationTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startLocationUpdates();
+  }
+
+  void _updateLocationToRealTimeFirebase() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    DatabaseReference driverRef = _firebaseDatabase.child('drivers/$uid');
+
+    driverRef.set({
+      'destination': _destinationController.text,
+      'longitude': double.parse(_longitudeController.text),
+      'latitude': double.parse(_latitudeController.text),
+    }).then((_) {
+      // Successfully wrote to the database
+      log("success");
+    }).catchError((error) {
+      // There was an error writing to the database
+      print(error);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to update location.')));
+    });
+  }
 
   Future<void> _updateLocationToFirebase() async {
     if (_selectedPrediction != null) {
@@ -28,7 +84,7 @@ class _DriverDestinationPage2State extends State<DriverDestinationPage2> {
           'destination': _destinationController.text,
           'longitude': _selectedPrediction!.lng,
           'latitude': _selectedPrediction!.lat,
-          'userID': FirebaseAuth.instance.currentUser!.uid,
+          'driverId': FirebaseAuth.instance.currentUser!.uid,
         });
 
         // Show the success dialog

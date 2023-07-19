@@ -27,6 +27,7 @@ class _BusTrackingState extends State<BusTracking> {
       "5b3ce3597851110001cf62484ed1f62b679d4f4395440958e2c058fa"; //OpenRouteService API key
   late String distance = '';
   late String time = '';
+  late String driverId;
 
   bool isLoading = false; //A flag to check the status of the api data loading
 
@@ -40,7 +41,6 @@ class _BusTrackingState extends State<BusTracking> {
       FlutterLocalNotificationsPlugin();
 
   late DatabaseReference dbRef;
-
   @override
   void initState() {
     super.initState();
@@ -51,36 +51,53 @@ class _BusTrackingState extends State<BusTracking> {
         .ref()
         .child('drivers'); //Change 'location' to your actual location node
 
+    driverId = widget.station.driverId;
+
+    fetchData(); // Call immediately
+
     Stream.periodic(Duration(seconds: 15)).listen((_) {
-      dbRef.once().then((DatabaseEvent event) {
-        Map<dynamic, dynamic>? data = event.snapshot.value as Map?;
-        if (data != null && data.isNotEmpty) {
-          String destinationString = data['destinationLocation'];
-          String sourceString = data['sourceLocation'];
+      fetchData(); // Call every 15 seconds
+    });
+  }
 
-          var destinationLat = double.parse(
-              destinationString.split('(')[1].split(',')[0].split(':')[1]);
-          var destinationLng = double.parse(
-              destinationString.split('longitude:')[1].split(')')[0]);
+  void fetchData() {
+    dbRef
+// Assuming 'userID' is the name of the field in your database
+        .equalTo(driverId)
+        .limitToFirst(1) // Limit the result to 1 document
+        .once()
+        .then((DatabaseEvent event) {
+      Map<dynamic, dynamic>? data = event.snapshot.value as Map?;
 
-          var sourceLat = double.parse(
-              sourceString.split('(')[1].split(',')[0].split(':')[1]);
-          var sourceLng =
-              double.parse(sourceString.split('longitude:')[1].split(')')[0]);
+      if (data != null && data.isNotEmpty) {
+        // Assuming the first item of the map is the desired document
+        Map<dynamic, dynamic> driverData = data.values.first;
 
-          setState(() {
-            destinationLocation = LatLng(
-              destinationLat,
-              destinationLng,
-            );
+        String destinationString = driverData['destinationLocation'];
+        String sourceString = driverData['sourceLocation'];
 
-            sourceLocation = LatLng(
-              sourceLat,
-              sourceLng,
-            );
-          });
-        }
-      });
+        var destinationLat = double.parse(
+            destinationString.split('(')[1].split(',')[0].split(':')[1]);
+        var destinationLng = double.parse(
+            destinationString.split('longitude:')[1].split(')')[0]);
+
+        var sourceLat = double.parse(
+            sourceString.split('(')[1].split(',')[0].split(':')[1]);
+        var sourceLng =
+            double.parse(sourceString.split('longitude:')[1].split(')')[0]);
+
+        setState(() {
+          destinationLocation = LatLng(
+            destinationLat,
+            destinationLng,
+          );
+
+          sourceLocation = LatLng(
+            sourceLat,
+            sourceLng,
+          );
+        });
+      }
     });
   }
 

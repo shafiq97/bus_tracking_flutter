@@ -26,10 +26,10 @@ class _LocationsPageState extends State<LocationsPage> {
     return _firebaseFirestore.collection('drivers').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return Station(
-          name: doc['destination'],
-          latitude: doc['latitude'],
-          longitude: doc['longitude'],
-        );
+            name: doc['destination'],
+            latitude: doc['latitude'],
+            longitude: doc['longitude'],
+            driverId: doc['driverId']);
       }).toList();
     });
   }
