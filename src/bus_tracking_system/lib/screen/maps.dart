@@ -28,6 +28,7 @@ class _BusTrackingState extends State<BusTracking> {
   late String distance = '';
   late String time = '';
   late String driverId;
+  bool _disposed = false;
 
   bool isLoading = false; //A flag to check the status of the api data loading
 
@@ -58,6 +59,13 @@ class _BusTrackingState extends State<BusTracking> {
     Stream.periodic(Duration(seconds: 15)).listen((_) {
       fetchData(); // Call every 15 seconds
     });
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    // Cancel ongoing operations here
+    super.dispose();
   }
 
   void fetchData() {
@@ -151,6 +159,9 @@ class _BusTrackingState extends State<BusTracking> {
 
   //Extraction of Live-location
   Future<void> getCurrentLocation() async {
+    if (_disposed) {
+      return;
+    }
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
