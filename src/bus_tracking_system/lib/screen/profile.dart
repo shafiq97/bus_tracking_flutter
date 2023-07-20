@@ -1,6 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String userEmail = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Call a function to fetch the user's email
+    fetchUserEmail();
+  }
+
+  Future<void> fetchUserEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userEmail = user.email!;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +49,7 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Email: xyz@gmail.com',
+              'Email: $userEmail', // Display the user's email
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
